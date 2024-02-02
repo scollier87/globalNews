@@ -18,6 +18,7 @@ const useFetchArticles = (category = 'general', searchTerm = '') => {
                 const response = await fetch(endpoint);
                 if(!response.ok) throw new Error('Failed to fetch articles.');
                 const data = await response.json();
+                data.articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
                 setArticles(data.articles);
             } catch (error) {
                 setError(error.message);
