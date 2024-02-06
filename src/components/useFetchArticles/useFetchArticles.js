@@ -1,43 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useFetchArticles = () => {
     const [articles, setArticles] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const apiKey = process.env.REACT_APP_NEWS_API_KEY;
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const endpoint = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        'X-Api-Key': apiKey,
-                    },
-                };
-                const response = await fetch(endpoint, options);
-                if (!response.ok) throw new Error(`Failed to fetch articles. Status: ${response.status}`);
-                const data = await response.json();
+    const fetchArticles = useCallback(async (category, searchTerm) => {
+        setIsLoading(true);
+        setError(null);
 
-                if (data.articles) {
-                    const sortedArticles = data.articles.reverse();
-                    setArticles(sortedArticles);
-                } else {
-                    console.log('No articles found');
-                }
-            } catch (error) {
-                console.error('Error fetching articles:', error);
-                setError(error.toString());
-            } finally {
-                setIsLoading(false);
+        let endpoint = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+        if (category) {
+            endpoint += `&category=${category}`;
+        }
+        if (searchTerm) {
+            endpoint += `&q=${encodeURIComponent(searchTerm)}`;
+        }
+
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch articles. Status: ${response.status}`);
             }
-        };
+            const data = await response.json();
 
-        fetchArticles();
+            if (data.articles) {
+                setArticles(data.articles);
+            } else {
+                console.log('No articles found');
+            }
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+            setError(error.toString());
+        } finally {
+            setIsLoading(false);
+        }
     }, [apiKey]);
 
-    return { articles, isLoading, error };
+    useEffect(() => {
+        fetchArticles();
+    }, [fetchArticles]);
+
+    return { articles, isLoading, error, fetchArticles };
 };
 
 export default useFetchArticles;

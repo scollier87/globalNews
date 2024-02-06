@@ -3,10 +3,16 @@ import { timeSince } from "../../utilities/dateUtils";
 import useFetchArticles from "../useFetchArticles/useFetchArticles";
 import './NewsFeed.css';
 
-const NewsFeed = ({ apiKey }) => {
+const NewsFeed = ({ apiKey, category, searchTerm }) => {
     const [displayArticles, setDisplayArticles] = useState([]);
     const [articlesToDisplay, setArticlesToDisplay] = useState(9);
-    const { articles, isLoading, error } = useFetchArticles(apiKey, 'technology', '');
+    const { articles, isLoading, error, fetchArticles } = useFetchArticles();
+
+    useEffect(() => {
+        if (apiKey) {
+            fetchArticles(category, searchTerm);
+        }
+    }, [apiKey, category, searchTerm, fetchArticles]);
 
     useEffect(() => {
         setDisplayArticles(articles.slice(0, articlesToDisplay));
@@ -21,7 +27,7 @@ const NewsFeed = ({ apiKey }) => {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [articlesToDisplay]);
 
     return (
         <div>
@@ -30,14 +36,14 @@ const NewsFeed = ({ apiKey }) => {
             <div className="news-feed">
                 {displayArticles.map((article, index) => (
                     <div key={index} className="news-card">
-                    <img src={article.urlToImage} alt={article.title} />
-                    <div className="news-card-body">
-                        <h2 className="news-card-title">{article.title}</h2>
-                        <p className="news-card-content">{article.description}</p>
-                    </div>
-                    <div className="news-card-footer">
-                        <small>{timeSince(article.publishedAt)} ago by {article.author}</small>
-                    </div>
+                        <img src={article.urlToImage} alt={article.title} />
+                        <div className="news-card-body">
+                            <h2 className="news-card-title">{article.title}</h2>
+                            <p className="news-card-content">{article.description}</p>
+                        </div>
+                        <div className="news-card-footer">
+                            <small>{timeSince(article.publishedAt)} ago by {article.author}</small>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -45,7 +51,8 @@ const NewsFeed = ({ apiKey }) => {
     );
 };
 
-export default NewsFeed
+export default NewsFeed;
+
 
 //limit viewport height so not all articles visible
 //track scroll position in regards to loading more articles window.innerheight window.offsetheight

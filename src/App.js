@@ -18,17 +18,22 @@ function App() {
     setSearchTerm(term);
   };
 
+  const resetAndNavigate = () => {
+    console.log('reset category and search terms')
+    setCategory('');
+    setSearchTerm('');
+  }
+
   return (
     <AuthProvider>
       <Router>
         <div className="App">
-          <Navbar onCategoryChange={handleCategoryChange} onSearch={handleSearch} />
+          <Navbar onCategoryChange={handleCategoryChange} onSearch={handleSearch} onReset={resetAndNavigate}/>
           <main>
             <Routes>
               <Route path="/" element={<NewsFeed apiKey={process.env.REACT_APP_NEWS_API_KEY} category={category} searchTerm={searchTerm} />} />
               <Route path="/signin" element={<LoginForm />} />
-              {/* <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={<ProfilePage />} /> */}
+              {/* <Route path="/profile" element={<ProfilePage />} /> */}
             </Routes>
           </main>
         </div>
