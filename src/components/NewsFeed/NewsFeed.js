@@ -14,7 +14,8 @@ const NewsFeed = ({ apiKey }) => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+            const bottomTolerance = 100;
+            if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - bottomTolerance) return;
             setArticlesToDisplay(prevCount => prevCount + 9);
         };
 
