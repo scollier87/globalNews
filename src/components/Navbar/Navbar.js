@@ -33,24 +33,23 @@ const Navbar = ({ onCategoryChange, onSearch }) => {
                     </div>
                 </li>
             </ul>
-            <div className="navbar-search">
-                <input type="text" placeholder="Search..." onChange={e => onSearch(e.target.value)} />
-                <button type="submit">🔍</button>
-            </div>
-            <div className="navbar-auth">
-                {isLoggedIn ? (
-                    <>
+            <div className="navbar-extra">
+                {isLoggedIn && <NavLink to="/profile">Profile</NavLink>}
+                <div className="navbar-search">
+                    <input type="text" placeholder="Search..." onChange={e => onSearch(e.target.value)} />
+                    <button type="submit">🔍</button>
+                </div>
+                <div className="navbar-auth">
+                    {isLoggedIn ? (
                         <button onClick={handleSignOut} className="navbar-signout">Sign Out</button>
-                        <NavLink to="/profile">Profile</NavLink>
-                    </>
-                ) : (
-                    <>
-                        <NavLink to="/signin">Sign In</NavLink> / <NavLink to="/register">Register</NavLink>
-                    </>
-                )}
+                    ) : (
+                        <NavLink to="/signin">Sign In</NavLink>
+                    )}
+                </div>
             </div>
         </nav>
     );
 };
 
 export default Navbar;
+
