@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
             console.log('User updated successfully:', data);
 
-            // Make sure to update only the specific fields in the user state
             setUser((prevState) => ({ ...prevState, ...updatedUserInfo }));
             localStorage.setItem('user', JSON.stringify({ ...user, ...updatedUserInfo }));
         } catch (error) {

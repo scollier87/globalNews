@@ -94,26 +94,26 @@ ul li button:hover {
 }
 
 .favorites-list {
-    list-style: none; /* Remove bullet points */
-    padding: 0; /* Remove default padding */
+    list-style: none; 
+    padding: 0;
 }
 
 .favorites-list li {
-    background-color: #fff; /* Background color for list items */
+    background-color: #fff;
     padding: 10px;
-    margin-bottom: 10px; /* Spacing between list items */
-    border-radius: 4px; /* Rounded corners for list items */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for list items */
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .favorites-list button {
-    background-color: #f44336; /* Red color for unfavorite button */
+    background-color: #f44336;
     color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
-    float: right; /* Align button to the right */
+    float: right;
 }
 
 .favorites-list .favorites-list button:hover {
