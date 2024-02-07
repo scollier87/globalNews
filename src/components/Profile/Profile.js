@@ -6,9 +6,14 @@ const Profile = () => {
     const { user, updateUser } = useAuth();
     const [username, setUsername] = useState(user?.username || '');
 
+    const handleUnfavorite = (articleTitle) => {
+        const updatedFavorites = user.favorites.filter(fav => fav.title !== articleTitle);
+        updateUser({ ...user, favorites: updatedFavorites });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        updateUser({ username });
+        updateUser({ ...user, username });
         setUsername('');
     };
 
@@ -26,6 +31,25 @@ const Profile = () => {
                 </label>
                 <button type="submit">Update</button>
             </form>
+            <div className="favorites-container">
+                <h3>Favorites</h3>
+                <ul className='favorites-list'>
+                    {user.favorites && user.favorites.length > 0 ? (
+                        user.favorites.map((fav, index) => (
+                            <li key={index}>
+                                <span>
+                                    <a href={fav.url} target="_blank" rel="noopener noreferrer">
+                                        {fav.title}
+                                    </a>
+                                </span>
+                                <button onClick={() => handleUnfavorite(fav.title)}>Unfavorite</button>
+                            </li>
+                        ))
+                    ) : (
+                        <p>No favorites added.</p>
+                    )}
+                </ul>
+            </div>
         </div>
     );
 };

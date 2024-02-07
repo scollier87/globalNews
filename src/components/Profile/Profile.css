@@ -4,41 +4,118 @@
     align-items: center;
     padding: 20px;
     background-color: #f7f7f7;
+    max-width: 600px;
+    margin: auto;
+    margin-top: 20px;
 }
 
 .profile-form {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 100%;
+    max-width: 400px;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    margin-bottom: 20px;
 }
 
 .profile-form label,
 .profile-form input,
-.profile-form button {
-    margin-bottom: 10px;
+.profile-form button,
+.profile-form h2 {
+    margin-bottom: 15px;
 }
 
 .profile-form button {
-    background-color: #333;
+    background-color: #0056b3;
     color: #fff;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .profile-form button:hover {
-    background-color: #444;
+    background-color: #003d82;
 }
 
 .profile-form input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-/* Add additional styles as needed */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+ul li button {
+    background-color: #ff4747;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+ul li button:hover {
+    background-color: #cc3838;
+}
+
+.favorites-container h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.favorites-container a {
+    color: #0056b3;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.favorites-container a:hover {
+    text-decoration: underline;
+}
+
+.favorites-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+}
+
+.favorites-list li {
+    background-color: #fff; /* Background color for list items */
+    padding: 10px;
+    margin-bottom: 10px; /* Spacing between list items */
+    border-radius: 4px; /* Rounded corners for list items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for list items */
+}
+
+.favorites-list button {
+    background-color: #f44336; /* Red color for unfavorite button */
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right; /* Align button to the right */
+}
+
+.favorites-list .favorites-list button:hover {
+    background-color: #d32f2f;
+}

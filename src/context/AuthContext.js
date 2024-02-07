@@ -9,15 +9,11 @@ export const AuthProvider = ({ children }) => {
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
-    const [isLoggedIn, setIsLoggedIn] = useState(!!user);
+    const [isLoggedIn, setIsLoggedIn] = useState(user !== null);
 
     useEffect(() => {
         localStorage.setItem('isLoggedIn', isLoggedIn.toString());
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-        } else {
-            localStorage.removeItem('user');
-        }
+        localStorage.setItem('user', JSON.stringify(user));
     }, [user, isLoggedIn]);
 
     const updateUserState = (newUserData) => {
@@ -49,8 +45,22 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('isLoggedIn');
     };
 
+    const addFavorite = async (article) => {
+        if (user) {
+            const updatedFavorites = [...user.favorites, article];
+            await updateUser({ ...user, favorites: updatedFavorites });
+        }
+    };
+
+    const removeFavorite = async (articleId) => {
+        if (user) {
+            const updatedFavorites = user.favorites.filter(article => article.id !== articleId);
+            await updateUser({ ...user, favorites: updatedFavorites });
+        }
+    };
+
     const updateUser = async (updatedUserInfo) => {
-        const userId = user.id;
+        const userId = user?.id;
         if (!userId) {
             console.error('User ID is not available for updating user info.');
             return;
@@ -73,6 +83,7 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
             console.log('User updated successfully:', data);
 
+            // Make sure to update only the specific fields in the user state
             setUser((prevState) => ({ ...prevState, ...updatedUserInfo }));
             localStorage.setItem('user', JSON.stringify({ ...user, ...updatedUserInfo }));
         } catch (error) {
@@ -80,12 +91,20 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, setIsLoggedIn, signIn, signOut, updateUser }}>
+        <AuthContext.Provider value={{
+            user,
+            addFavorite,
+            removeFavorite,
+            isLoggedIn,
+            signIn,
+            signOut,
+            updateUser
+        }}>
             {children}
         </AuthContext.Provider>
     );
+
 };
 
 export const useAuth = () => useContext(AuthContext);
