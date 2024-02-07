@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUsers, addUser } from '../../api/firebaseAPI';
+import { addUser } from '../../api/firebaseAPI';
 import { useAuth } from '../../context/AuthContext';
 import './SignIn.css';
 
@@ -11,7 +11,7 @@ const RegistrationForm = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useAuth();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,21 +28,8 @@ const RegistrationForm = () => {
       }
     } else {
       try {
-        const users = await fetchUsers();
-        let isAuthenticated = false;
-
-        Object.entries(users).forEach(([key, user]) => {
-          if (user.email === email && user.password === password) {
-            isAuthenticated = true;
-            alert('Login successful!');
-            setIsLoggedIn(true);
-            navigate('/');
-          }
-        });
-
-        if (!isAuthenticated) {
-          throw new Error('Invalid email or password');
-        }
+        await signIn(email, password);
+        navigate('/');
       } catch (error) {
         setError(`Login failed: ${error.message}`);
       }

@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const useFetchArticles = () => {
+const useFetchArticles = (category, searchTerm) => {
     const [articles, setArticles] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const apiKey = process.env.REACT_APP_NEWS_API_KEY;
+    const apiToken = process.env.REACT_APP_GNEWS_API_TOKEN;
 
-    const fetchArticles = useCallback(async (category, searchTerm) => {
+    const fetchArticles = useCallback(async () => {
         setIsLoading(true);
         setError(null);
 
-        let endpoint = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+        let endpoint = `https://gnews.io/api/v4/top-headlines?lang=en&country=us&token=${apiToken}`;
         if (category) {
-            endpoint += `&category=${category}`;
+            endpoint += `&topic=${category}`;
         }
         if (searchTerm) {
             endpoint += `&q=${encodeURIComponent(searchTerm)}`;
@@ -21,28 +21,31 @@ const useFetchArticles = () => {
         try {
             const response = await fetch(endpoint);
             if (!response.ok) {
-                throw new Error(`Failed to fetch articles. Status: ${response.status}`);
+                const errMessage = response.status === 401 ? "Unauthorized access. Check your API token." : `Failed to fetch articles. Status: ${response.status}`;
+                throw new Error(errMessage);
             }
             const data = await response.json();
 
             if (data.articles) {
                 setArticles(data.articles);
             } else {
-                console.log('No articles found');
+                setError('No articles found');
+                setArticles([]);
             }
         } catch (error) {
             console.error('Error fetching articles:', error);
-            setError(error.toString());
+            setError(error.message);
+            setArticles([]);
         } finally {
             setIsLoading(false);
         }
-    }, [apiKey]);
+    }, [apiToken, category, searchTerm]);
 
     useEffect(() => {
         fetchArticles();
     }, [fetchArticles]);
 
-    return { articles, isLoading, error, fetchArticles };
+    return { articles, isLoading, error };
 };
 
 export default useFetchArticles;

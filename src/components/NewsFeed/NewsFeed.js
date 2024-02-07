@@ -1,48 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { timeSince } from "../../utilities/dateUtils";
-import useFetchArticles from "../useFetchArticles/useFetchArticles";
+import React from "react";
+// import useFetchArticles from "../useFetchArticles/useFetchArticles"; // Comment out if not using API
+import mockData from "../../data/mock_data.json"; // Adjust path as necessary
 import './NewsFeed.css';
+import { timeSince } from "../../utilities/dateUtils";
 
-const NewsFeed = ({ apiKey, category, searchTerm }) => {
-    const [displayArticles, setDisplayArticles] = useState([]);
-    const [articlesToDisplay, setArticlesToDisplay] = useState(9);
-    const { articles, isLoading, error, fetchArticles } = useFetchArticles();
-
-    useEffect(() => {
-        if (apiKey) {
-            fetchArticles(category, searchTerm);
-        }
-    }, [apiKey, category, searchTerm, fetchArticles]);
-
-    useEffect(() => {
-        setDisplayArticles(articles.slice(0, articlesToDisplay));
-    }, [articlesToDisplay, articles]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const bottomTolerance = 100;
-            if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - bottomTolerance) return;
-            setArticlesToDisplay(prevCount => prevCount + 9);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [articlesToDisplay]);
+const NewsFeed = () => {
+    // const { articles, isLoading, error } = useFetchArticles(category, searchTerm); // Comment out if using mock data
+    const articles = mockData.articles; // Use mock data
 
     return (
         <div>
+            {/* Comment out isLoading and error states if not using API
             {isLoading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
+            */}
             <div className="news-feed">
-                {displayArticles.map((article, index) => (
+                {articles.map((article, index) => (
                     <div key={index} className="news-card">
-                        <img src={article.urlToImage} alt={article.title} />
+                        <img src={article.image} alt={article.title} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
                         <div className="news-card-body">
                             <h2 className="news-card-title">{article.title}</h2>
                             <p className="news-card-content">{article.description}</p>
+                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="view-more-link">View More</a>
                         </div>
                         <div className="news-card-footer">
-                            <small>{timeSince(article.publishedAt)} ago by {article.author}</small>
+                            <small>Published {timeSince(new Date(article.publishedAt))} ago by {article.source.name || 'Unknown'}</small>
                         </div>
                     </div>
                 ))}

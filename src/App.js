@@ -5,6 +5,7 @@ import NewsFeed from './components/NewsFeed/NewsFeed';
 import Navbar from './components/Navbar/Navbar';
 import './App.css';
 import LoginForm from './components/SignIn/SignIn';
+import Profile from './components/Profile/Profile';
 
 function App() {
   const [category, setCategory] = useState('');
@@ -33,7 +34,7 @@ function App() {
             <Routes>
               <Route path="/" element={<NewsFeed apiKey={process.env.REACT_APP_NEWS_API_KEY} category={category} searchTerm={searchTerm} />} />
               <Route path="/signin" element={<LoginForm />} />
-              {/* <Route path="/profile" element={<ProfilePage />} /> */}
+              <Route path="/profile" element={<Profile/>} />
             </Routes>
           </main>
         </div>

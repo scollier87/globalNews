@@ -7,6 +7,11 @@
     padding: 10px;
 }
 
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+}
+
 .navbar-links {
     list-style: none;
     display: flex;
@@ -17,43 +22,6 @@
 .nav-item {
     padding: 0 15px;
     position: relative;
-}
-
-.navbar-brand {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.navbar-search {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-search input, .navbar-search button {
-    padding: 5px;
-}
-
-.navbar-search button {
-    cursor: pointer;
-    background-color: #333;
-    color: #fff;
-    border: none;
-}
-
-.navbar-auth a, .navbar-signout {
-    margin-left: 10px;
-    text-decoration: none;
-    color: #fff;
-    cursor: pointer;
-}
-
-.dropbtn {
-    background-color: #000;
-    color: white;
-    padding: 5px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
 }
 
 .dropdown-content {
@@ -92,7 +60,33 @@
     align-items: center;
 }
 
-.navbar-auth .navbar-signout {
+.navbar-extra a,
+.navbar-signout {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.navbar-search {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.navbar-search input,
+.navbar-search button {
+    padding: 5px;
+}
+
+.navbar-search button {
+    cursor: pointer;
+    background-color: #333;
+    color: #fff;
+    border: none;
+}
+
+.navbar-signout {
     background-color: #333;
     color: #fff;
     padding: 5px 10px;
@@ -102,6 +96,6 @@
     border-radius: 5px;
 }
 
-.navbar-auth .navbar-signout:hover {
+.navbar-signout:hover {
     background-color: #555;
 }
