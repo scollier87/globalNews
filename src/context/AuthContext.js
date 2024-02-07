@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const usersResponse = await fetch(`${firebaseUrl}/users.json`);
             const users = await usersResponse.json();
-            const userEntry = Object.entries(users).find(([key, user]) => user.email === email && user.password === password);
+            const userEntry = Object.entries(users).find(([key, value]) => value.email === email && value.password === password);
             if (userEntry) {
                 const [id, userData] = userEntry;
                 updateUserState({ ...userData, id });
@@ -43,6 +43,29 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
         localStorage.removeItem('user');
         localStorage.removeItem('isLoggedIn');
+    };
+
+    const addUser = async (newUser) => {
+        try {
+            const response = await fetch(`${firebaseUrl}/users.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('User added successfully:', data);
+            // Update the state with the new user data including the generated ID from Firebase
+            updateUserState({ ...newUser, id: data.name });
+        } catch (error) {
+            console.error('Error adding user:', error);
+        }
     };
 
     const addFavorite = async (article) => {
@@ -98,6 +121,7 @@ export const AuthProvider = ({ children }) => {
             isLoggedIn,
             signIn,
             signOut,
+            addUser,
             updateUser
         }}>
             {children}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addUser } from '../../api/firebaseAPI';
 import { useAuth } from '../../context/AuthContext';
 import './SignIn.css';
 
@@ -8,31 +7,39 @@ const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(true); // Assume the user wants to register by default
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signIn, addUser } = useAuth(); // Use addUser from context
+
+  const handleRegister = async (newUser) => {
+    try {
+      await addUser(newUser); // Use addUser from AuthContext
+      alert('Registration successful!');
+      setIsRegistering(false);
+      navigate('/');
+    } catch (error) {
+      setError(`Registration failed: ${error.message}`);
+    }
+  };
+
+  const handleSignIn = async (email, password) => {
+    try {
+      await signIn(email, password);
+      navigate('/');
+    } catch (error) {
+      setError(`Login failed: ${error.message}`);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (isRegistering) {
-      try {
-        const newUser = { username, email, password };
-        await addUser(newUser);
-        alert('Registration successful!');
-        setIsRegistering(false);
-        navigate('/');
-      } catch (error) {
-        setError(`Registration failed: ${error.message}`);
-      }
+      const newUser = { username, email, password };
+      handleRegister(newUser);
     } else {
-      try {
-        await signIn(email, password);
-        navigate('/');
-      } catch (error) {
-        setError(`Login failed: ${error.message}`);
-      }
+      handleSignIn(email, password);
     }
   };
 
@@ -82,11 +89,11 @@ const RegistrationForm = () => {
           </button>
         </div>
       </form>
-      <p className="toggle-form" onClick={() => setIsRegistering(!isRegistering)}>
+      <button className="toggle-form" onClick={() => setIsRegistering(!isRegistering)}>
         {isRegistering
           ? 'Already have an account? Sign in'
           : "Don't have an account? Register"}
-      </p>
+      </button>
     </div>
   );
 };
