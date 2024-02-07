@@ -2,26 +2,33 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './SignIn.css';
+import { firebaseUrl } from '../../api/config';
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(true); // Assume the user wants to register by default
+  const [isRegistering, setIsRegistering] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { signIn, addUser } = useAuth(); // Use addUser from context
+  const { signIn } = useAuth();
 
   const handleRegister = async (newUser) => {
     try {
-      await addUser(newUser); // Use addUser from AuthContext
-      alert('Registration successful!');
-      setIsRegistering(false);
-      navigate('/');
+        const response = await fetch(`${firebaseUrl}/users.json`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser),
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        console.log('Registration successful:', data);
+        await signIn(newUser.email, newUser.password);
     } catch (error) {
-      setError(`Registration failed: ${error.message}`);
+        setError(`Registration failed: ${error.message}`);
     }
-  };
+};
+
 
   const handleSignIn = async (email, password) => {
     try {
@@ -36,7 +43,7 @@ const RegistrationForm = () => {
     event.preventDefault();
 
     if (isRegistering) {
-      const newUser = { username, email, password };
+      const newUser = { username, email, password, favorites: [] };
       handleRegister(newUser);
     } else {
       handleSignIn(email, password);

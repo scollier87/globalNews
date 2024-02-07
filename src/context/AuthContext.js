@@ -4,130 +4,124 @@ import { firebaseUrl } from '../api/config';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem('user');
-        return storedUser ? JSON.parse(storedUser) : null;
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [isLoggedIn, setIsLoggedIn] = useState(!!user);
+
+  useEffect(() => {
+    localStorage.setItem('isLoggedIn', isLoggedIn.toString());
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user, isLoggedIn]);
+
+  const signIn = async (email, password) => {
+    const usersResponse = await fetch(`${firebaseUrl}/users.json`);
+    const users = await usersResponse.json();
+    console.log('Fetched users:', users);
+
+    const userEntry = Object.entries(users).find(([key, value]) => value.email === email && value.password === password);
+    if (userEntry) {
+      const [id, userData] = userEntry;
+      console.log('Matching user entry:', id, userData);
+
+
+      const cleanUserData = { ...userData, id };
+      console.log('User data to be set:', cleanUserData);
+
+      setUser(cleanUserData);
+      setIsLoggedIn(true);
+      localStorage.setItem('user', JSON.stringify(cleanUserData));
+    } else {
+      throw new Error('User not found');
+    }
+  };
+
+
+  const signOut = () => {
+    setUser(null);
+    setIsLoggedIn(false);
+    localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
+  };
+
+  const addUser = async (newUser) => {
+    const response = await fetch(`${firebaseUrl}/users.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser),
     });
 
-    const [isLoggedIn, setIsLoggedIn] = useState(user !== null);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    useEffect(() => {
-        localStorage.setItem('isLoggedIn', isLoggedIn.toString());
-        localStorage.setItem('user', JSON.stringify(user));
-    }, [user, isLoggedIn]);
+    const data = await response.json();
+    console.log('User added successfully:', data);
 
-    const updateUserState = (newUserData) => {
-        setUser(newUserData);
-        localStorage.setItem('user', JSON.stringify(newUserData));
-        setIsLoggedIn(true);
-    };
+  };
 
-    const signIn = async (email, password) => {
-        try {
-            const usersResponse = await fetch(`${firebaseUrl}/users.json`);
-            const users = await usersResponse.json();
-            const userEntry = Object.entries(users).find(([key, value]) => value.email === email && value.password === password);
-            if (userEntry) {
-                const [id, userData] = userEntry;
-                updateUserState({ ...userData, id });
-            } else {
-                throw new Error('User not found');
-            }
-        } catch (error) {
-            console.error('SignIn error:', error);
-        }
-    };
+  const addFavorite = async (article) => {
+    if (!user || !user.id) {
+      console.error("User ID is not available for adding favorites.");
+      return;
+    }
 
-    const signOut = () => {
-        setUser(null);
-        setIsLoggedIn(false);
-        localStorage.removeItem('user');
-        localStorage.removeItem('isLoggedIn');
-    };
+    const updatedFavorites = user.favorites ? [...user.favorites, article] : [article];
+    await updateUser({ ...user, favorites: updatedFavorites });
+  };
 
-    const addUser = async (newUser) => {
-        try {
-            const response = await fetch(`${firebaseUrl}/users.json`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newUser),
-            });
+  const removeFavorite = async (articleId) => {
+    if (!user || !user.id) {
+      console.error("User ID is not available for removing favorites.");
+      return;
+    }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    const updatedFavorites = user.favorites.filter(article => article.id !== articleId);
+    await updateUser({ ...user, favorites: updatedFavorites });
+  };
 
-            const data = await response.json();
-            console.log('User added successfully:', data);
-            // Update the state with the new user data including the generated ID from Firebase
-            updateUserState({ ...newUser, id: data.name });
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    };
+  const updateUser = async (updatedUserInfo) => {
+    if (!user || !user.id) {
+      console.error('User ID is not available for updating user info.');
+      return;
+    }
 
-    const addFavorite = async (article) => {
-        if (user) {
-            const updatedFavorites = [...user.favorites, article];
-            await updateUser({ ...user, favorites: updatedFavorites });
-        }
-    };
+    const { id, ...userInfoWithoutId } = updatedUserInfo;
 
-    const removeFavorite = async (articleId) => {
-        if (user) {
-            const updatedFavorites = user.favorites.filter(article => article.id !== articleId);
-            await updateUser({ ...user, favorites: updatedFavorites });
-        }
-    };
+    const response = await fetch(`${firebaseUrl}/users/${user.id}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userInfoWithoutId),
+    });
 
-    const updateUser = async (updatedUserInfo) => {
-        const userId = user?.id;
-        if (!userId) {
-            console.error('User ID is not available for updating user info.');
-            return;
-        }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-        try {
-            const url = `${firebaseUrl}/users/${userId}.json`;
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedUserInfo),
-            });
+    const updatedUser = { ...user, ...userInfoWithoutId };
+    console.log('User updated successfully:', updatedUser);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
 
-            const data = await response.json();
-            console.log('User updated successfully:', data);
 
-            setUser((prevState) => ({ ...prevState, ...updatedUserInfo }));
-            localStorage.setItem('user', JSON.stringify({ ...user, ...updatedUserInfo }));
-        } catch (error) {
-            console.error('Error updating user:', error);
-        }
-    };
-
-    return (
-        <AuthContext.Provider value={{
-            user,
-            addFavorite,
-            removeFavorite,
-            isLoggedIn,
-            signIn,
-            signOut,
-            addUser,
-            updateUser
-        }}>
-            {children}
-        </AuthContext.Provider>
-    );
-
+  return (
+    <AuthContext.Provider value={{
+      user,
+      isLoggedIn,
+      signIn,
+      signOut,
+      addUser,
+      addFavorite,
+      removeFavorite,
+      updateUser
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);
