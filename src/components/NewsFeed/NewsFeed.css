@@ -35,13 +35,6 @@
     font-size: 0.875rem;
 }
 
-.news-card-footer {
-    margin-top: auto;
-    padding: 10px 15px;
-    background: #f8f8f8;
-    border-top: 1px solid #eee;
-}
-
 .article {
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -59,6 +52,57 @@
 
 .view-more-link:hover {
     text-decoration: underline
+}
+
+.news-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background: #f8f8f8;
+    border-top: 1px solid #eee;
+}
+
+.news-card button {
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    width: auto; /* Keep the width as per content size */
+    display: block; /* For the block-level element look */
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.news-card button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.news-card .favorite {
+    background-color: #28a745;
+}
+
+.news-card .favorite:hover {
+    background-color: #218838;
+}
+
+.news-card .unfavorite {
+    background-color: #dc3545;
+}
+
+.news-card .unfavorite:hover {
+    background-color: #c82333;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 

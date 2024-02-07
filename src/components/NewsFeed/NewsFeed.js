@@ -12,7 +12,6 @@ const NewsFeed = ({ apiKey, category, searchTerm }) => {
     const { user, updateUser } = useAuth();
     const navigate = useNavigate();
 
-    // Initialize favorites in user object if it doesn't exist
     useEffect(() => {
         if (user && !user.favorites) {
             updateUser({ ...user, favorites: [] });
@@ -51,9 +50,18 @@ const NewsFeed = ({ apiKey, category, searchTerm }) => {
                         <div className="news-card-footer">
                             <small>Published {timeSince(new Date(article.publishedAt))} ago by {article.source.name || 'Unknown'}</small>
                         </div>
-                        <button onClick={() => handleFavoriteToggle(article)}>
-                            {user && user.favorites && user.favorites.some(fav => fav.title === article.title) ? 'Unfavorite' : 'Favorite'}
-                        </button>
+                        <div className="button-container">
+                            <button
+                                onClick={() => handleFavoriteToggle(article)}
+                                className={
+                                    user && user.favorites && user.favorites.some(fav => fav.title === article.title)
+                                    ? 'unfavorite'
+                                    : 'favorite'
+                                }
+                            >
+                                {user && user.favorites && user.favorites.some(fav => fav.title === article.title) ? 'Unfavorite' : 'Favorite'}
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
