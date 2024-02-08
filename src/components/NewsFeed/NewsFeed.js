@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 // import useFetchArticles from "../useFetchArticles/useFetchArticles"; // Comment out if not using API
 import mockData from "../../data/mock_data.json"; // comment out when using API
 import './NewsFeed.css';
 import { timeSince } from "../../utilities/dateUtils";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../Theme/ThemeContext";
 
 const NewsFeed = ({ apiKey, category, searchTerm }) => {
     // const { articles, isLoading, error } = useFetchArticles(category, searchTerm); // Comment out if using mock data
     const articles = mockData.articles; // Use mock data
     const { user, updateUser } = useAuth();
     const navigate = useNavigate();
+    const theme = useContext(ThemeContext)
 
     useEffect(() => {
         if (user && !user.favorites) {
@@ -38,7 +40,7 @@ const NewsFeed = ({ apiKey, category, searchTerm }) => {
             {isLoading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
             */}
-            <div className="news-feed">
+            <div className={`news-feed ${theme}`}>
                 {articles.map((article, index) => (
                     <div key={index} className="news-card">
                         <img src={article.image} alt={article.title} style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeContext } from '../../Theme/ThemeContext';
 import ThemeToggle from '../../Theme/ThemeToggle';
@@ -6,8 +6,12 @@ import './Profile.css';
 
 const Profile = () => {
     const { user, updateUser } = useAuth();
-    const { theme, toggleTheme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);
     const [username, setUsername] = useState(user?.username || '');
+
+    useEffect(() => {
+        setUsername(user?.username || '');
+    }, [user])
 
     const handleUnfavorite = (articleTitle) => {
         const updatedFavorites = user.favorites.filter(fav => fav.title !== articleTitle);
@@ -17,12 +21,12 @@ const Profile = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         updateUser({ ...user, username });
-        setUsername('');
+        setUsername(user.username);
     };
 
     return (
         <div className={`profile-container ${theme}`}>
-            <h2>Profile</h2>
+            <h2>{username}'s Profile</h2>
             <form className="profile-form" onSubmit={handleSubmit}>
                 <label>
                     Username:

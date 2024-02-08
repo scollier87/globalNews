@@ -59,15 +59,15 @@
     align-items: center;
     justify-content: center;
     padding: 10px 15px;
-    background: #f8f8f8;
+    background: var(--background-color);
     border-top: 1px solid #eee;
 }
 
 .news-card button {
     padding: 6px 10px;
     font-size: 0.875rem;
-    width: auto; /* Keep the width as per content size */
-    display: block; /* For the block-level element look */
+    width: auto;
+    display: block;
     text-align: center;
     background-color: #007bff;
     color: white;
@@ -82,20 +82,21 @@
     transform: scale(1.05);
 }
 
-.news-card .favorite {
-    background-color: #28a745;
+.news-card button.favorite {
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
 }
 
-.news-card .favorite:hover {
-    background-color: #218838;
+.news-card button.favorite:hover {
+    background-color: var(--button-hover-background-color);
 }
 
-.news-card .unfavorite {
-    background-color: #dc3545;
+.news-card button.unfavorite {
+    background-color: var(--unfavorite-button-background-color);
 }
 
-.news-card .unfavorite:hover {
-    background-color: #c82333;
+.news-card button.unfavorite:hover {
+    background-color: var(--unfavorite-button-hover-background-color);
 }
 
 .button-container {
