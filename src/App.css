@@ -1,0 +1,60 @@
+:root {
+  --background-color: #f7f7f7;
+  --text-color: #000;
+  --card-background-color: #fff;
+  --button-background-color: #0056b3;
+  --button-text-color: #fff;
+  --button-hover-background-color: #003d82;
+  --unfavorite-button-background-color: #ff4747;
+  --unfavorite-button-hover-background-color: #cc3838;
+  --link-color: #0056b3;
+  --input-text-color: #000;
+  --input-background-color: #fff;
+}
+
+.dark-theme {
+  --background-color: #333;
+  --text-color: #fff;
+  --card-background-color: #222;
+  --button-background-color: #555;
+  --button-text-color: #ddd;
+  --button-hover-background-color: #777;
+  --unfavorite-button-background-color: #f44336;
+  --unfavorite-button-hover-background-color: #d32f2f;
+  --link-color: #1a8cff;
+  --input-text-color: #fff;
+  --input-background-color: #333;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.news-card {
+  border: 1px solid var(--border-color);
+}
+
+.news-card-footer {
+  background: var(--footer-background-color);
+}
+
+.view-more-link,
+.favorites-list a {
+  color: var(--link-color);
+}
+
+.view-more-link:hover,
+.favorites-list a:hover {
+  /* Adjust hover styles if needed */
+}
+
+.news-card button.favorite,
+.news-card button.unfavorite {
+  background-color: var(--button-background);
+}
+
+.news-card button.favorite:hover,
+.news-card button.unfavorite:hover {
+  background-color: var(--button-hover-background);
+}

@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { ThemeContext } from '../../Theme/ThemeContext';
+import ThemeToggle from '../../Theme/ThemeToggle';
 import './Profile.css';
 
 const Profile = () => {
     const { user, updateUser } = useAuth();
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [username, setUsername] = useState(user?.username || '');
 
     const handleUnfavorite = (articleTitle) => {
@@ -18,7 +21,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="profile-container">
+        <div className={`profile-container ${theme}`}>
             <h2>Profile</h2>
             <form className="profile-form" onSubmit={handleSubmit}>
                 <label>
@@ -46,10 +49,11 @@ const Profile = () => {
                             </li>
                         ))
                     ) : (
-                        <p>No favorites added.</p>
+                        <p>No favorites added yet.</p>
                     )}
                 </ul>
             </div>
+            <ThemeToggle/>
         </div>
     );
 };
